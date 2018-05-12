@@ -20,7 +20,7 @@
  *  along with this program ; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
- * $Id: decoder.c 1985 2011-05-18 09:02:35Z Isibaar $
+ * $Id: decoder.c 2130 2016-01-08 17:40:12Z Isibaar $
  *
  ****************************************************************************/
 
@@ -1647,9 +1647,13 @@ repeat:
     if(stats) {
       stats->type = XVID_TYPE_VOL;
       stats->data.vol.general = 0;
-      /*XXX: if (dec->interlacing)
-        stats->data.vol.general |= ++INTERLACING; */
-      stats->data.vol.width = dec->width;
+	  stats->data.vop.general = 0;
+	  if (dec->interlacing) {
+		  stats->data.vol.general |= XVID_VOL_INTERLACING;
+		  if (dec->top_field_first) {
+			  stats->data.vop.general |= XVID_VOP_TOPFIELDFIRST;
+		  }
+	  }      stats->data.vol.width = dec->width;
       stats->data.vol.height = dec->height;
       stats->data.vol.par = dec->aspect_ratio;
       stats->data.vol.par_width = dec->par_width;
